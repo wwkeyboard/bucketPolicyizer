@@ -14,12 +14,19 @@ type Policy struct {
 }
 
 // Statement is a single permission
+// the Principal element is sometimes an
+// array and sometimes a string
 type Statement struct {
 	Sid       string
 	Effect    string
-	Principal string
+	Principal interface{}
 	Action    []string
 	Resource  []string
+}
+
+// Principal is a list of ARNs
+type Principal struct {
+	AWS []string
 }
 
 // EmptyPolicy creates a valid empty policy
