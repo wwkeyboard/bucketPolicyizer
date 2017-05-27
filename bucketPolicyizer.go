@@ -1,11 +1,29 @@
 package bucketPolicyizer
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 var defaultVersion = "2012-10-17"
 
 // GetObjectAction the s3 action for getting an object
-var GetObjectAction = "s3:GetObject"
+var GetObjectAction = SliceString{"s3:GetObject"}
+
+type SliceString []string
+
+func (ms *SliceString) UnmarshalJSON(data []byte) error {
+	var v []string
+	if err := json.Unmarshal(data, &v); err != nil {
+		var s string
+		if err := json.Unmarshal(data, &s); err != nil {
+			return err
+		}
+		*ms = []string{s}
+		return nil
+	}
+	*ms = v
+	return nil
+}
 
 // Policy is the Bucket policy
 type Policy struct {
@@ -20,8 +38,8 @@ type Statement struct {
 	Sid       string
 	Effect    string
 	Principal interface{}
-	Action    []string
-	Resource  []string
+	Action    SliceString
+	Resource  SliceString
 }
 
 // Principal is a list of ARNs
