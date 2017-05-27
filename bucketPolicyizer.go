@@ -6,20 +6,37 @@ import (
 
 var defaultVersion = "2012-10-17"
 
-// GetObjectAction the s3 action for getting an object
-var GetObjectAction = SliceString{"s3:GetObject"}
+type Action []string
+type Resource []string
 
-type SliceString []string
-
-func (ms *SliceString) UnmarshalJSON(data []byte) error {
+// Custom json unmarshal for Resource and Action
+func _unmarshalJSON(data []byte) ([]string, error) {
 	var v []string
 	if err := json.Unmarshal(data, &v); err != nil {
 		var s string
 		if err := json.Unmarshal(data, &s); err != nil {
-			return err
+			return nil, err
 		}
-		*ms = []string{s}
-		return nil
+		return []string{s}, nil
+	}
+	return v, nil
+}
+
+// Custom json unmarshal for Action
+func (ms *Action) UnmarshalJSON(data []byte) error {
+	v, err := _unmarshalJSON(data)
+	if err != nil {
+		return err
+	}
+	*ms = v
+	return nil
+}
+
+// Custom json unmarshal for Resource
+func (ms *Resource) UnmarshalJSON(data []byte) error {
+	v, err := _unmarshalJSON(data)
+	if err != nil {
+		return err
 	}
 	*ms = v
 	return nil
@@ -38,8 +55,8 @@ type Statement struct {
 	Sid       string
 	Effect    string
 	Principal interface{}
-	Action    SliceString
-	Resource  SliceString
+	Action    Action
+	Resource  Resource
 }
 
 // Principal is a list of ARNs

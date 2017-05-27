@@ -51,8 +51,8 @@ func TestActionAndResourceAsString(t *testing.T) {
 
 func TestReadOnlyFromAnonymous(t *testing.T) {
 	policy := EmptyPolicy()
-	action := GetObjectAction
-	resource := SliceString{"arn:aws:s3::exampleBucket/*"}
+	action := Action{"s3:GetObject"}
+	resource := Resource{"arn:aws:s3::exampleBucket/*"}
 	s := Statement{
 		Sid:       "AddCannedAcl",
 		Effect:    "Allow",
@@ -77,8 +77,8 @@ func TestReadOnlyFromAnonymous(t *testing.T) {
 
 func TestReadOnlyFromSpecificARN(t *testing.T) {
 	policy := EmptyPolicy()
-	action := GetObjectAction
-	resource := SliceString{"arn:aws:s3::exampleBucket/*"}
+	action := Action{"s3:GetObject"}
+	resource := Resource{"arn:aws:s3::exampleBucket/*"}
 	principal := Principal{
 		AWS: []string{"arn:aws:iam::111122223333:root", "arn:aws:iam::444455556666:root"},
 	}
