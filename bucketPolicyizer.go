@@ -52,9 +52,9 @@ type Policy struct {
 // the Principal element is sometimes an
 // array and sometimes a string
 type Statement struct {
-	Sid       string
+	Sid       string `json:",omitempty"`
 	Effect    string
-	Principal interface{}
+	Principal interface{} `json:",omitempty"`
 	Action    Action
 	Resource  Resource
 }
